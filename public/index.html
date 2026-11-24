@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b5d7a">
+<title>90 Ngày Đêm – Khai báo dữ liệu dân cư</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#12263a;--muted:#5b6b7b;--brand:#0b5d7a;--brand-d:#08475e;--tint:#e6f2f7;--red:#c8322d;--bg:#f2f5f7;--card:#fff;--line:#d5dee6;--ok:#157347;--err:#b42318;--r:14px}
+*{box-sizing:border-box;margin:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:'Be Vietnam Pro',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;font-size:17px;line-height:1.55;color:var(--ink);background:var(--bg);padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+.wrap{max-width:560px;margin:0 auto;padding:0 16px}
+header{background:var(--brand);color:#fff;border-bottom:4px solid var(--red);padding:calc(18px + env(safe-area-inset-top)) 0 18px}
+header .wrap{display:flex;align-items:center;gap:14px}
+.logo{flex:none;width:48px;height:48px;border-radius:12px;background:var(--red);display:grid;place-items:center;font-weight:700;font-size:22px;color:#ffd84d}
+header h1{font-size:1.15rem;line-height:1.25;font-weight:700}
+header p{font-size:.88rem;opacity:.88}
+main{padding-top:18px}
+.view{display:none}.view.on{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px;margin-bottom:16px}
+h2{font-size:1.25rem;line-height:1.3;margin-bottom:6px}
+.lead{color:var(--muted);font-size:.95rem;margin-bottom:16px}
+.notice{background:var(--tint);border:1px solid #b9d9e6;border-radius:12px;padding:12px 14px;font-size:.92rem;margin-bottom:18px;display:flex;gap:10px}
+/* tiến trình */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.steps div{text-align:center;font-size:.82rem;font-weight:600;color:var(--muted);padding-top:12px;border-top:5px solid var(--line)}
+.steps div.on{color:var(--brand);border-color:var(--brand)}
+.steps div.done{color:var(--ok);border-color:var(--ok)}
+/* form */
+.field{margin-bottom:16px}
+label.l{display:block;font-weight:600;margin-bottom:6px}
+.hint{font-size:.85rem;color:var(--muted);margin-top:4px}
+input[type=text],input[type=tel],textarea{width:100%;min-height:54px;padding:12px 14px;font:inherit;border:1.5px solid var(--line);border-radius:12px;background:#fff;color:var(--ink)}
+textarea{resize:vertical;min-height:80px}
+input:focus,textarea:focus,button:focus-visible,a:focus-visible{outline:3px solid #7cc4de;outline-offset:2px;border-color:var(--brand)}
+.field.bad input,.field.bad textarea{border-color:var(--err)}
+.msg{display:none;color:var(--err);font-size:.88rem;font-weight:500;margin-top:4px}
+.field.bad .msg{display:block}
+/* thành viên */
+.member{border:1.5px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:14px;background:#fafcfd}
+.m-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-weight:700;color:var(--brand)}
+.rm{min-height:44px;padding:0 14px;border:0;border-radius:10px;background:#fde8e6;color:var(--err);font:inherit;font-size:.9rem;font-weight:600;cursor:pointer}
+.docs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.chip{position:relative}
+.chip input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer}
+.chip span{display:flex;align-items:center;justify-content:center;text-align:center;min-height:52px;padding:6px 8px;border:1.5px solid var(--line);border-radius:12px;background:#fff;font-size:.88rem;line-height:1.3;font-weight:500}
+.chip input:checked+span{background:var(--brand);border-color:var(--brand);color:#fff;font-weight:600}
+.chip input:focus-visible+span{outline:3px solid #7cc4de;outline-offset:2px}
+.sel{font-size:.85rem;color:var(--muted);margin-top:8px}
+/* nút */
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:56px;padding:12px 18px;border:0;border-radius:14px;font:inherit;font-weight:700;font-size:1.05rem;cursor:pointer;text-decoration:none}
+.btn-p{background:var(--brand);color:#fff}.btn-p:active{background:var(--brand-d)}
+.btn-p:disabled{background:#8fa3af}
+.btn-s{background:#fff;color:var(--brand);border:2px solid var(--brand)}
+.btn-add{background:var(--tint);color:var(--brand);border:2px dashed var(--brand)}
+.btn-call{background:var(--ok);color:#fff}
+.row{display:grid;grid-template-columns:1fr 1.4fr;gap:10px;margin-top:20px}
+.row.one{grid-template-columns:1fr}
+/* tổng kết */
+.sum dt{font-size:.85rem;color:var(--muted)}.sum dd{font-weight:600;margin-bottom:10px}
+.sum ul{padding-left:20px;font-weight:500}.sum li small{display:block;color:var(--muted);font-weight:400}
+#status{margin-top:12px;text-align:center;font-weight:600}
+#status.error{color:var(--err)}
+.done-box{text-align:center;padding:12px 0}
+.tick{width:72px;height:72px;margin:0 auto 12px;border-radius:50%;background:var(--ok);color:#fff;display:grid;place-items:center;font-size:38px}
+/* hướng dẫn */
+ol.guide{list-style:none;padding:0;counter-reset:s}
+ol.guide li{counter-increment:s;display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line)}
+ol.guide li:last-child{border:0}
+ol.guide li:before{content:counter(s);flex:none;width:36px;height:36px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-weight:700}
+.big{font-size:1.5rem;font-weight:700;color:var(--ink);margin:6px 0 14px}
+.hp{position:absolute;left:-9999px}
+/* thanh dưới */
+nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);z-index:10}
+nav .wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:6px 10px}
+nav button{min-height:62px;border:0;background:none;font:inherit;font-size:.82rem;font-weight:600;color:var(--muted);border-radius:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+nav button i{font-style:normal;font-size:1.45rem;line-height:1}
+nav button.on{color:var(--brand);background:var(--tint)}
+@media(prefers-reduced-motion:no-preference){.view.on{animation:f .2s ease-out}@keyframes f{from{opacity:.4}to{opacity:1}}}
+
+header{background:linear-gradient(160deg,#0e7396 0%,#08475e 100%);padding:calc(22px + env(safe-area-inset-top)) 0 22px;text-align:center}
+header .wrap{display:flex;flex-direction:column;align-items:center;gap:0}
+.logo{width:60px;height:60px;border-radius:50%;font-size:30px;border:3px solid #ffd84d;box-shadow:0 4px 14px rgba(0,0,0,.25);margin-bottom:10px}
+header h1{font-size:2rem;line-height:1.15;font-weight:800;letter-spacing:.01em}
+header .sub{font-size:1.05rem;font-weight:500;opacity:.95;margin-top:2px}
+.pill{margin-top:12px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:5px 14px;font-size:.85rem;font-weight:500}
+.docs{grid-template-columns:1fr;gap:8px}
+.chip span{justify-content:flex-start;text-align:left;gap:12px;padding:10px 14px;font-size:.95rem}
+.chip span:before{content:"";flex:none;width:24px;height:24px;border-radius:7px;border:2px solid #9fb0bd;background:#fff;display:grid;place-items:center;font-size:16px;line-height:1;color:#fff}
+.chip input:checked+span:before{content:"✓";background:#fff;border-color:#fff;color:var(--brand);font-weight:800}
+.note{background:#fff7e0;border:1px solid #f1d47a;border-radius:12px;padding:14px;margin-top:14px;font-size:.95rem}
+.contact{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)}
+.contact:last-of-type{border:0;padding-bottom:0}
+.contact .role{font-size:.85rem;color:var(--muted);font-weight:500}
+.contact .who{font-weight:700;line-height:1.3}
+.contact .num{font-size:1.1rem;font-weight:700;color:var(--brand);letter-spacing:.02em}
+.contact .btn{width:auto;min-width:104px;min-height:52px;padding:0 16px;font-size:1rem}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="logo" aria-hidden="true">★</div>
+  <h1>90 Ngày Đêm</h1>
+  <p class="sub">Làm sạch dữ liệu dân cư</p>
+  <span class="pill">Khai báo hộ gia đình &amp; giấy tờ VNeID</span>
+</div></header>
+
+<main class="wrap">
+<!-- KHAI BÁO -->
+<section class="view on" id="v-form" aria-labelledby="t-form">
+  <div class="card" id="formCard">
+    <h2 id="t-form">Khai báo thông tin hộ gia đình</h2>
+    <div class="notice"><span aria-hidden="true">🔒</span><span>Thông tin chỉ phục vụ công tác của Công an khu vực (CSKV). Bạn không cần nhập số CCCD hay mật khẩu VNeID.</span></div>
+    <div class="steps" aria-live="polite"><div id="s1">Hộ gia đình</div><div id="s2">Thành viên</div><div id="s3">Kiểm tra</div></div>
+
+    <div class="step" id="p1">
+      <div class="field"><label class="l" for="head">Họ và tên chủ hộ</label>
+        <input type="text" id="head" autocomplete="name" placeholder="Ví dụ: Nguyễn Văn A"><div class="msg">Vui lòng nhập họ và tên chủ hộ.</div></div>
+      <div class="field"><label class="l" for="phone">Số điện thoại liên hệ</label>
+        <input type="tel" id="phone" inputmode="tel" autocomplete="tel" placeholder="Ví dụ: 0912 345 678"><div class="msg">Số điện thoại chưa đúng (10 số, bắt đầu bằng 0).</div></div>
+      <div class="field"><label class="l" for="addr">Địa chỉ nhà</label>
+        <textarea id="addr" autocomplete="street-address" placeholder="Số nhà, đường, phường/xã, quận/huyện"></textarea><div class="msg">Vui lòng nhập địa chỉ nhà.</div></div>
+      <input class="hp" type="text" id="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <div class="row one"><button class="btn btn-p" data-go="2">Tiếp tục</button></div>
+    </div>
+
+    <div class="step" id="p2" hidden>
+      <p class="lead">Thêm từng người từ <b>14 tuổi trở lên</b> trong hộ và chọn các giấy tờ đã tích hợp vào VNeID của người đó. Nếu chưa có giấy tờ nào, cứ để trống.</p>
+      <div id="members"></div>
+      <button type="button" class="btn btn-add" id="addBtn">+ Thêm thành viên</button>
+      <div class="row"><button class="btn btn-s" data-go="1">Quay lại</button><button class="btn btn-p" data-go="3">Tiếp tục</button></div>
+    </div>
+
+    <div class="step" id="p3" hidden>
+      <p class="lead">Vui lòng kiểm tra lại trước khi gửi.</p>
+      <dl class="sum" id="sum"></dl>
+      <div class="row"><button class="btn btn-s" data-go="2">Sửa lại</button><button class="btn btn-p" id="sendBtn">Gửi khai báo</button></div>
+      <div id="status" role="status"></div>
+    </div>
+  </div>
+
+  <div class="card done-box" id="doneCard" hidden>
+    <div class="tick" aria-hidden="true">✓</div>
+    <h2>Đã gửi khai báo</h2>
+    <p class="lead">Cảm ơn bạn. CSKV sẽ liên hệ qua số điện thoại nếu cần xác minh thêm.</p>
+    <button class="btn btn-p" id="againBtn">Khai báo hộ khác</button>
+  </div>
+</section>
+
+<!-- VNeID -->
+<section class="view" id="v-vneid" aria-labelledby="t-vneid">
+  <div class="card">
+    <h2 id="t-vneid">Cài đặt và dùng VNeID</h2>
+    <p class="lead">Làm lần lượt 5 bước dưới đây.</p>
+    <ol class="guide">
+      <li><span>Tải ứng dụng <b>VNeID</b> từ App Store (iPhone) hoặc Google Play (Android).</span></li>
+      <li><span>Mở ứng dụng, chọn <b>“Đăng ký tài khoản định danh điện tử”</b>.</span></li>
+      <li><span>Nhập số điện thoại và mã OTP gửi về máy để xác thực.</span></li>
+      <li><span>Chụp ảnh CCCD gắn chip và quét NFC theo hướng dẫn trên màn hình.</span></li>
+      <li><span>Hoàn tất đăng ký và chờ cơ quan Công an xác nhận.</span></li>
+    </ol>
+    <div class="note"><b>Lưu ý:</b> Nếu lần đầu bạn tạo đăng ký, lần sau đăng nhập và xong mà chưa có <b>định danh mức 2</b>, hãy liên hệ <b>Công an phường</b> để được hỗ trợ.</div>
+  </div>
+  <button class="btn btn-s" data-tab="help" style="margin-bottom:12px">Xem số điện thoại hỗ trợ</button>
+  <button class="btn btn-p" data-tab="form">Quay lại khai báo</button>
+</section>
+
+<!-- TRỢ GIÚP -->
+<section class="view" id="v-help" aria-labelledby="t-help">
+  <div class="card">
+    <h2 id="t-help">Tôi cần trợ giúp</h2>
+    <p class="lead">Gặp khó khăn khi khai báo hoặc cài VNeID, hãy gọi một trong các số dưới đây. Bạn cũng có thể nhờ con cháu giúp.</p>
+    <div class="contact"><div><div class="role">Cảnh sát khu vực</div><div class="who">Nguyễn Minh Huy</div><div class="num">0905 772 273</div></div><a class="btn btn-call" href="tel:0905772273" aria-label="Gọi Nguyễn Minh Huy">📞 Gọi</a></div>
+    <div class="contact"><div><div class="role">Tổ trưởng tổ dân phố</div><div class="who">Nguyễn Văn Ánh</div><div class="num">0905 133 157</div></div><a class="btn btn-call" href="tel:0905133157" aria-label="Gọi Nguyễn Văn Ánh">📞 Gọi</a></div>
+    <div class="contact"><div><div class="role">Bí thư Chi đoàn</div><div class="who">Hồ Công Tịnh Tường</div><div class="num">0764 964 530</div></div><a class="btn btn-call" href="tel:0764964530" aria-label="Gọi Hồ Công Tịnh Tường">📞 Gọi</a></div>
+    <div class="contact"><div><div class="role">Chi hội trưởng Phụ nữ</div><div class="who">Hoàng Thị Thủy</div><div class="num">0905 268 431</div></div><a class="btn btn-call" href="tel:0905268431" aria-label="Gọi Hoàng Thị Thủy">📞 Gọi</a></div>
+  </div>
+</section>
+</main>
+
+<nav aria-label="Điều hướng chính"><div class="wrap">
+  <button class="on" data-tab="form"><i aria-hidden="true">📝</i>Khai báo</button>
+  <button data-tab="vneid"><i aria-hidden="true">📱</i>VNeID</button>
+  <button data-tab="help"><i aria-hidden="true">🆘</i>Trợ giúp</button>
+</div></nav>
+
+<script>
+const DOCS=["Giấy khai sinh","Thẻ ngân hàng / tài khoản thanh toán / ví điện tử / tài khoản tiền di động","Tài khoản an sinh xã hội","Số thuê bao di động","Sổ sức khỏe điện tử","Giấy phép lái xe","Chứng nhận đăng ký xe","Văn bằng, chứng chỉ hệ thống giáo dục quốc dân","Giấy chứng nhận quyền sử dụng đất, quyền sở hữu tài sản gắn liền với đất","Lý lịch tư pháp","Mã số thuế cá nhân","Giấy đăng ký kết hôn"];
+const $=id=>document.getElementById(id), KEY='nd90_draft';
+let step=1;
+
+/* tab */
+function tab(n){
+  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+n));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.tab===n));
+  if(location.hash!=='#'+n)history.replaceState(null,'','#'+n);
+  scrollTo({top:0});
+}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-tab]');if(t)tab(t.dataset.tab);const g=e.target.closest('[data-go]');if(g)go(+g.dataset.go)});
+if(['vneid','help'].includes(location.hash.slice(1)))tab(location.hash.slice(1));
+
+/* thành viên */
+function addMember(name='',docs=[]){
+  const el=document.createElement('div');el.className='member';
+  el.innerHTML=`<div class="m-head"><span class="mn"></span><button type="button" class="rm">Xóa</button></div>
+  <div class="field"><label class="l">Họ và tên</label><input type="text" class="mname" placeholder="Ví dụ: Nguyễn Thị B"><div class="msg">Vui lòng nhập họ tên hoặc xóa mục này.</div></div>
+  <label class="l">Giấy tờ đã tích hợp VNeID</label><div class="docs">${DOCS.map(d=>`<label class="chip"><input type="checkbox" value="${d}"><span>${d}</span></label>`).join('')}</div><div class="sel"></div>`;
+  el.querySelector('.mname').value=name;
+  el.querySelectorAll('.chip input').forEach(c=>{c.checked=docs.includes(c.value);c.onchange=()=>{count(el);save()}});
+  el.querySelector('.rm').onclick=()=>{el.remove();number();save()};
+  $('members').appendChild(el);number();count(el);
+}
+function number(){document.querySelectorAll('.member').forEach((m,i)=>m.querySelector('.mn').textContent='Thành viên '+(i+1))}
+function count(el){const n=el.querySelectorAll('.chip input:checked').length;el.querySelector('.sel').textContent=n?`Đã chọn ${n} giấy tờ`:'Chưa chọn giấy tờ nào'}
+$('addBtn').onclick=()=>{addMember();const l=$('members').lastElementChild;l.scrollIntoView({behavior:'smooth',block:'center'});l.querySelector('.mname').focus()};
+
+/* dữ liệu */
+const normPhone=p=>p.replace(/[\s.\-]/g,'');
+const phoneOk=p=>/^(0|\+84)\d{9,10}$/.test(normPhone(p));
+function members(){return [...document.querySelectorAll('.member')].map(m=>({name:m.querySelector('.mname').value.trim(),documents:[...m.querySelectorAll('.chip input:checked')].map(c=>c.value)}))}
+function bad(id,on){$(id).closest('.field').classList.toggle('bad',on);return !on}
+
+function valid(s){
+  if(s===1){const a=bad('head',!$('head').value.trim()),b=bad('phone',!phoneOk($('phone').value)),c=bad('addr',!$('addr').value.trim());
+    if(!(a&&b&&c))document.querySelector('.field.bad input,.field.bad textarea').focus();return a&&b&&c}
+  if(s===2){let ok=true;document.querySelectorAll('.member').forEach(m=>{const i=m.querySelector('.mname');const e=!i.value.trim();i.closest('.field').classList.toggle('bad',e);if(e&&ok){i.focus();ok=false}});return ok}
+  return true;
+}
+function go(n){
+  if(n>step&&!valid(step))return;
+  step=n;[1,2,3].forEach(i=>{$('p'+i).hidden=i!==n;$('s'+i).className=i===n?'on':i<n?'done':''});
+  if(n===3)summary();
+  $('formCard').scrollIntoView({block:'start'});save();
+}
+function summary(){
+  const m=members().filter(x=>x.name),esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  $('sum').innerHTML=`<dt>Chủ hộ</dt><dd>${esc($('head').value.trim())}</dd><dt>Số điện thoại</dt><dd>${esc(normPhone($('phone').value))}</dd><dt>Địa chỉ</dt><dd>${esc($('addr').value.trim())}</dd>
+  <dt>Thành viên từ 14 tuổi (${m.length})</dt><dd>${m.length?'<ul>'+m.map(x=>`<li>${esc(x.name)}<small>${x.documents.length?esc(x.documents.join(', ')):'Chưa có giấy tờ tích hợp'}</small></li>`).join('')+'</ul>':'Không có'}</dd>`;
+  $('status').textContent='';$('status').className='';
+}
+
+/* lưu nháp (phòng khi lỡ thoát trang) */
+function save(){try{sessionStorage.setItem(KEY,JSON.stringify({h:$('head').value,p:$('phone').value,a:$('addr').value,m:members()}))}catch(e){}}
+function load(){try{const d=JSON.parse(sessionStorage.getItem(KEY));if(!d)return false;$('head').value=d.h||'';$('phone').value=d.p||'';$('addr').value=d.a||'';(d.m||[]).forEach(x=>addMember(x.name,x.documents));return true}catch(e){return false}}
+function clearDraft(){try{sessionStorage.removeItem(KEY)}catch(e){}}
+document.addEventListener('input',e=>{if(e.target.closest('#formCard')){e.target.closest('.field')?.classList.remove('bad');save()}});
+
+/* gửi */
+$('sendBtn').onclick=async()=>{
+  const btn=$('sendBtn'),st=$('status');btn.disabled=true;st.className='';st.textContent='Đang gửi, vui lòng chờ…';
+  const body={headOfHousehold:$('head').value.trim(),phone:normPhone($('phone').value),address:$('addr').value.trim(),members:members().filter(m=>m.name),website:$('website').value};
+  try{
+    const r=await fetch('/api/submit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const j=await r.json().catch(()=>({}));
+    if(!r.ok||!j.success)throw new Error(j.message||'Không gửi được');
+    clearDraft();$('formCard').hidden=true;$('doneCard').hidden=false;scrollTo({top:0});
+  }catch(e){
+    st.className='error';st.textContent='❌ '+(e.message==='Failed to fetch'?'Mất kết nối mạng. Thông tin vẫn được giữ, hãy bấm gửi lại.':e.message);
+  }finally{btn.disabled=false}
+};
+$('againBtn').onclick=()=>{$('members').innerHTML='';['head','phone','addr'].forEach(i=>$(i).value='');addMember();$('doneCard').hidden=true;$('formCard').hidden=false;go(1)};
+
+if(!load()||!document.querySelector('.member'))addMember();
+</script>
+</body>
+</html>
