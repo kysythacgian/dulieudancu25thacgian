@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0b5d7a">
+<title>Quản trị – 90 Ngày Đêm</title>
+<style>
+:root{--ink:#12263a;--muted:#5b6b7b;--brand:#0b5d7a;--tint:#e6f2f7;--bg:#f2f5f7;--line:#d5dee6;--err:#b42318;--ok:#157347}
+*{box-sizing:border-box;margin:0}
+body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;font-size:16px;line-height:1.5;color:var(--ink);background:var(--bg);padding-bottom:40px}
+header{background:var(--brand);color:#fff;padding:calc(16px + env(safe-area-inset-top)) 16px 14px;border-bottom:4px solid #c8322d}
+header h1{font-size:1.2rem}header p{font-size:.85rem;opacity:.9}
+main{padding:16px;max-width:1400px;margin:0 auto}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:14px}
+input[type=text],input[type=search]{width:100%;min-height:50px;padding:10px 14px;font:inherit;border:1.5px solid var(--line);border-radius:12px}
+.btn{min-height:50px;padding:0 18px;border:0;border-radius:12px;font:inherit;font-weight:700;cursor:pointer;background:var(--brand);color:#fff}
+.btn.s{background:#fff;color:var(--brand);border:2px solid var(--brand)}
+.btn:disabled{background:#8fa3af}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.row>*{flex:1 1 140px}
+.err{color:var(--err);font-weight:600;margin-top:10px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.stat{background:var(--tint);border-radius:12px;padding:12px}
+.stat b{display:block;font-size:1.6rem;line-height:1.2}.stat span{font-size:.82rem;color:var(--muted)}
+.wrapt{overflow:auto;max-height:70vh;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;font-size:.85rem;min-width:1300px;width:100%;background:#fff}
+th,td{border:1px solid #9fb0bd;padding:5px 7px;vertical-align:middle}
+th{background:var(--tint);position:sticky;top:0;z-index:2;text-align:center}
+tr.h2 th{top:34px}
+td.c{text-align:center}
+tr.hh td{border-top:2px solid var(--brand)}
+tfoot td{font-weight:700;background:#f7fafc;position:sticky;bottom:0}
+.muted{color:var(--muted);font-size:.85rem}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<header><h1>Quản trị – Tổ dân phố 25 Thạc Gián</h1><p>Xem và tải bản tổng hợp VNeID mức 2</p></header>
+<main>
+  <section class="card" id="login">
+    <label for="pw" style="font-weight:600;display:block;margin-bottom:6px">Mật khẩu quản trị</label>
+    <input type="text" id="pw" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Nhập mật khẩu">
+    <div class="row" style="margin-top:12px"><button class="btn" id="loginBtn">Đăng nhập</button></div>
+    <div class="err" id="err" role="alert"></div>
+  </section>
+
+  <section id="panel" hidden>
+    <div class="card">
+      <div class="stats" id="stats"></div>
+    </div>
+    <div class="card">
+      <div class="row">
+        <input type="search" id="q" placeholder="Tìm theo tên, chủ hộ, SĐT, địa chỉ…" style="flex:2 1 220px">
+        <button class="btn" id="dlBtn">⬇ Tải Excel</button>
+        <button class="btn s" id="reBtn">Tải lại</button>
+        <button class="btn s" id="outBtn">Thoát</button>
+      </div>
+      <p class="muted" id="info" style="margin:10px 0"></p>
+      <div class="wrapt"><table id="tbl"></table></div>
+    </div>
+  </section>
+</main>
+<script src="/xlsx-lite.js"></script>
+<script>
+const FIXED=['Thời gian','Tổ dân phố số','Hộ Ông (Bà)','Địa chỉ','SĐT','STT','Họ tên thành viên hộ gia đình','Quan hệ với chủ hộ','Chưa cấp Căn cước','Đã cấp Căn cước chưa đăng ký VNeID mức 2'];
+const GROUP='Đã cấp Căn cước, đã có VNeID mức 2, và đã tích hợp các loại giấy tờ dưới đây';
+const DOCS=['Giấy khai sinh','Thẻ ngân hàng / tài khoản thanh toán / ví điện tử / tài khoản tiền di động','Tài khoản an sinh xã hội','Số thuê bao di động','Sổ sức khỏe điện tử','Giấy phép lái xe','Chứng nhận đăng ký xe','Văn bằng, chứng chỉ hệ thống giáo dục quốc dân','Giấy chứng nhận quyền sử dụng đất, quyền sở hữu tài sản gắn liền với đất','Lý lịch tư pháp','Mã số thuế cá nhân','Giấy đăng ký kết hôn'];
+const NF=FIXED.length,NC=NF+DOCS.length;
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let PW='',ROWS=[];
+
+async function fetchRows(){
+  const r=await fetch('/api/admin',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:PW})});
+  const j=await r.json().catch(()=>({}));
+  if(!r.ok||!j.success)throw new Error(j.message||'Không lấy được dữ liệu');
+  ROWS=(j.rows||[]).map(x=>{const a=Array.from({length:NC},(_,i)=>String(x[i]==null?'':x[i]));return a});
+}
+async function enter(){
+  $('err').textContent='';$('loginBtn').disabled=true;
+  PW=$('pw').value;
+  try{await fetchRows();$('login').hidden=true;$('panel').hidden=false;render()}
+  catch(e){PW='';$('err').textContent=e.message==='Failed to fetch'?'Mất kết nối mạng.':e.message}
+  finally{$('loginBtn').disabled=false}
+}
+$('loginBtn').onclick=enter;
+$('pw').addEventListener('keydown',e=>{if(e.key==='Enter')enter()});
+$('reBtn').onclick=async()=>{$('reBtn').disabled=true;try{await fetchRows();render()}catch(e){alert(e.message)}finally{$('reBtn').disabled=false}};
+$('outBtn').onclick=()=>{PW='';ROWS=[];$('pw').value='';$('panel').hidden=true;$('login').hidden=false};
+$('q').oninput=render;
+
+const mark=v=>v==='✓';
+function totals(rows){const t=Array(NC-8).fill(0);rows.forEach(r=>{for(let c=8;c<NC;c++)if(mark(r[c]))t[c-8]++});return t}
+
+function render(){
+  const q=$('q').value.trim().toLowerCase();
+  const rows=q?ROWS.filter(r=>[r[2],r[3],r[4],r[6]].join(' ').toLowerCase().includes(q)):ROWS;
+  const all=ROWS,hh=all.filter(r=>r[5]==='1').length,n=all.length;
+  const none=all.filter(r=>mark(r[8])).length,cccd=all.filter(r=>mark(r[9])).length,v2=n-none-cccd;
+  $('stats').innerHTML=[[hh,'Số hộ đã khai báo'],[n,'Tổng số người (từ 14 tuổi)'],[none,'Chưa cấp Căn cước'],[cccd,'Có CCCD, chưa ĐK VNeID mức 2'],[v2,'Đã có VNeID mức 2']].map(([a,b])=>`<div class="stat"><b>${a}</b><span>${b}</span></div>`).join('');
+  $('info').textContent=`Hiển thị ${rows.length}/${n} dòng.`;
+  const th=(t,extra='')=>`<th ${extra}>${esc(t)}</th>`;
+  let h='<thead><tr>'+FIXED.map(t=>th(t,'rowspan="2"')).join('')+th(GROUP,`colspan="${DOCS.length}"`)+'</tr><tr class="h2">'+DOCS.map((_,i)=>th(i+1,'title="'+esc(DOCS[i])+'"')).join('')+'</tr></thead>';
+  let b='<tbody>'+rows.map(r=>'<tr'+(r[5]==='1'?' class="hh"':'')+'>'+r.map((v,i)=>`<td${i>=5&&i!==6&&i!==7?' class="c"':''}>${esc(v)}</td>`).join('')+'</tr>').join('')+'</tbody>';
+  const t=totals(rows);
+  const f='<tfoot><tr><td colspan="8" style="text-align:right">Tổng cộng</td>'+t.map(x=>`<td class="c">${x}</td>`).join('')+'</tr></tfoot>';
+  $('tbl').innerHTML=h+b+f;
+}
+
+/* Xuất Excel */
+$('dlBtn').onclick=()=>{
+  const q=$('q').value.trim().toLowerCase();
+  const rows=q?ROWS.filter(r=>[r[2],r[3],r[4],r[6]].join(' ').toLowerCase().includes(q)):ROWS;
+  const H=(v)=>({v,s:1});
+  const head1=[...FIXED.map(H),H(GROUP),...Array(DOCS.length-1).fill(H(''))];
+  const head2=[...Array(NF).fill(H('')),...DOCS.map((_,i)=>H(i+1))];
+  const body=rows.map(r=>r.map((v,i)=>{
+    if(i===5){const n=parseInt(v,10);return {v:isNaN(n)?v:n,s:3}}
+    return {v,s:(i>=5&&i!==6&&i!==7)?3:2}}));
+  const t=totals(rows);
+  const foot=[{v:'Tổng cộng',s:4},...Array(7).fill({v:'',s:4}),...t.map(x=>({v:x,s:4}))];
+  const merges=[];
+  for(let c=0;c<NF;c++)merges.push(`${String.fromCharCode(65+c)}1:${String.fromCharCode(65+c)}2`);
+  const col=i=>{let s='',n=i+1;while(n>0){const m=(n-1)%26;s=String.fromCharCode(65+m)+s;n=Math.floor((n-1)/26)}return s};
+  merges.push(`${col(NF)}1:${col(NC-1)}1`);
+  merges.push(`A${rows.length+3}:H${rows.length+3}`);
+  const s1={name:'ThongKeVNeID',rows:[head1,head2,...body,foot],merges,
+    cols:[17,12,24,30,13,6,28,16,12,20,...Array(DOCS.length).fill(6)],heights:{0:70},freeze:{cols:7,rows:2}};
+  const s2={name:'ChuThich',rows:[[{v:'Cột',s:1},{v:'Loại giấy tờ',s:1}],...DOCS.map((d,i)=>[{v:i+1,s:3},{v:d,s:2}]),[],[{v:'✓ = có / đã tích hợp',s:0}]],cols:[8,90]};
+  const bytes=makeXlsx([s1,s2]);
+  const d=new Date(),p=n=>String(n).padStart(2,'0');
+  const name=`ThongKe_VNeID_To25ThacGian_${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}.xlsx`;
+  const blob=new Blob([bytes],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2000);
+};
+</script>
+</body>
+</html>
